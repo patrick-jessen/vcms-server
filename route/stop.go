@@ -14,7 +14,7 @@ func stopFunc() {
 	select {
 	case <-preventStop:
 		return
-	case <-time.After(time.Millisecond * 100):
+	case <-time.After(time.Millisecond * 1000):
 		fmt.Println("Exited because browser was closed")
 		os.Exit(0)
 	}

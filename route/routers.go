@@ -38,49 +38,44 @@ func NewRouter() *mux.Router {
 	return router
 }
 
-func Assets(w http.ResponseWriter, r *http.Request) {
+func serveClientAsset(w http.ResponseWriter, r *http.Request) {
+	serveFile(w, r, "./assets/client/")
+}
+
+func serveFile(w http.ResponseWriter, r *http.Request, dir string) {
 	params := mux.Vars(r)
-	path := fmt.Sprintf("./assets/%s", params["file"])
+	relPath := params["path"]
+	if len(relPath) == 0 {
+		relPath = "index.html"
+	}
+	path := fmt.Sprintf(dir+"%s", relPath)
+
+	fmt.Println("PATH", path)
 
 	file, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		fmt.Println("DOES NOT EXIST")
+		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 	defer file.Close()
 
-	w.Header().Set("Content-Type", mime.TypeByExtension(params["file"]))
+	pathSplit := strings.Split(path, ".")
+	ext := pathSplit[len(pathSplit)-1]
+	ext = "." + ext
+
+	mime := mime.TypeByExtension(ext)
+	w.Header().Set("Content-Type", mime)
 	_, err = io.Copy(w, file)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func AssetsClient(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	path := fmt.Sprintf("./assets/client/%s", params["file"])
+func test(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("AAAAAAAA")
+	w.WriteHeader(http.StatusNotFound)
 
-	file, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	var ctype = ""
-	var split = strings.Split(params["file"], ".")
-	var ext = split[len(split)-1]
-
-	switch ext {
-	case "css":
-		ctype = "text/css"
-	case "png":
-		ctype = "image/png"
-	}
-
-	w.Header().Set("Content-Type", ctype)
-	_, err = io.Copy(w, file)
-	if err != nil {
-		panic(err)
-	}
 }
 
 var routes = Routes{
@@ -100,16 +95,17 @@ var routes = Routes{
 	},
 
 	Route{
-		"Assets",
+		"hu",
 		"GET",
-		"/assets/{file}",
-		Assets,
+		"/",
+		serveClientAsset,
 	},
+
 	Route{
 		"Assets",
 		"GET",
-		"/assets/client/{file}",
-		AssetsClient,
+		"/{path:.*}",
+		serveClientAsset,
 	},
 
 	Route{

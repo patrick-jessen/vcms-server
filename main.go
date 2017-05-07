@@ -13,7 +13,7 @@ import (
 	sw "github.com/patrick-jessen/vcms-server/route"
 )
 
-var browserArgs = []string{"--app=http://localhost:1337/assets/client/client.html"}
+var browserArgs = []string{"--app=http://localhost:1337/"}
 
 const serverPort = 1337
 

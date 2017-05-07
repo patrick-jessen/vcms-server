@@ -24,6 +24,7 @@ new Vue({
     }
   },
   el: '#client-app',
+  name: 'vcms',
   methods: {
     onNext() {
       this.showBase = false;
@@ -50,26 +51,3 @@ new Vue({
   }
 })
 
-// Prevent server from stopping (in case of refresh)
-var client = new XMLHttpRequest();
-client.open("GET", "/preventStop", true);
-client.send();
-
-// Inform server that browser has closed
-window.addEventListener('unload', stopServer, false);
-function stopServer() {
-
-  setTimeout(function() {
-    console.log("timeout");
-  }, 1000)
-
-  var client = new XMLHttpRequest();
-  client.open("GET", "/stop", false);
-  client.send();
-}
-
-function onNext() {
-  //window.location.replace(document.getElementById('url').value);
-  document.getElementById('iframe').src = document.getElementById('url').value;
-  document.getElementById('iframe').style.display = 'block';
-}
