@@ -19,7 +19,3 @@ function stopServer() {
   client.open("GET", "/stop", false);
   client.send();
 }
-
-var script = document.createElement('script');
-script.src = 'http://localhost:8080/dist/build.js';
-document.head.appendChild(script); //or something of the likes
