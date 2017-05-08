@@ -4,6 +4,7 @@
     <div class='resize' @mousedown='onResizeStart'></div>
     <div class='content'>
       <img class='logo' src='/assets/favicon.png'>
+      <ComponentHierarchy/>
     </div>
   </div>
 </div>
@@ -61,6 +62,9 @@ export default {
         this.setAppSize()
       }
     }
+  },
+  components: {
+    ComponentHierarchy: require('./ComponentHierarchy.vue')
   }
 }
 </script>
