@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
+	start.Signal()
 	start.Browser()
 	start.Server()
 }

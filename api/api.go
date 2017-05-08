@@ -6,43 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
-
-var preventStop = make(chan bool, 1)
-var stopping = make(chan bool, 1)
-
-func stopFunc() {
-	select {
-	case <-preventStop:
-		return
-	case <-time.After(time.Millisecond * 1000):
-		fmt.Println("Exited because browser was closed")
-		os.Exit(0)
-	}
-}
-
-// Stop tells the server to stop after a timeout.
-func Stop(c *gin.Context) {
-	if len(preventStop) > 0 {
-		<-preventStop // Empty channel
-	}
-
-	go stopFunc()
-	c.Status(200)
-}
-
-// PreventStop tells server to not stop afterall.
-func PreventStop(c *gin.Context) {
-	select {
-	case preventStop <- true:
-	default:
-	}
-	c.Status(200)
-}
 
 func Save(w http.ResponseWriter, r *http.Request) {
 	const StoreFile = "/home/patrick/Code/js/vcms/src/store/laptops.js"
