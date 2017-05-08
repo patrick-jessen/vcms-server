@@ -90,6 +90,8 @@ export default {
     vertical-align: top;
     padding: 20px;
     text-align: center;
+    height: 100vh;
+    overflow: auto;
 
     & .logo {
       width: 30px;

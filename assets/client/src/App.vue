@@ -49,6 +49,7 @@ export default {
         recent.push(this.appUrl);
 
       window.localStorage.setItem('recentApps', recent)
+      document.body.style.overflow = 'auto';
     },
     onInput(e) {
       this.appUrl = e.target.value

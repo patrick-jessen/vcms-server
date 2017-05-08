@@ -1,10 +1,13 @@
 // import Vue from 'vue'
 import App from './App.vue'
 
-new Vue({
-  el: '#vcms',
+window.vcmsvue = new Vue({
   name: 'VCMS',
-  render: h => h(App)
+  el: '#vcms',
+  render: h => h(App),
+  data: {
+    selected: null
+  }
 })
 
 // Prevent server from stopping (in case of refresh)
