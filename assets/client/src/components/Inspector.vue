@@ -4,7 +4,7 @@
     <div class='resize' @mousedown='onResizeStart'></div>
     <div class='content'>
       <img class='logo' src='/assets/favicon.png'>
-      <ComponentHierarchy/>
+      <TreeTable/>
     </div>
   </div>
 </div>
@@ -64,7 +64,7 @@ export default {
     }
   },
   components: {
-    ComponentHierarchy: require('./ComponentHierarchy.vue')
+    TreeTable: require('./TreeTable.vue')
   }
 }
 </script>
