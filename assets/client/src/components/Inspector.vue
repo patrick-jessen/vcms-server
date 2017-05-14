@@ -6,7 +6,7 @@
       <img class='logo' src='/assets/favicon.png'>
       <TreeTable v-bind='pageData' @select='onSelect'/>
 
-      <TreeTable v-bind='propsData'/>
+      <!--<TreeTable v-bind='propsData'/>-->
     </div>
   </div>
 </div>
@@ -22,13 +22,13 @@ export default {
       style: {
         width: '300px'
       },
-      selectedComponent: 'app',
+      selectedComponent: 'app.$children.menu',
 
       pageData: {
 
         test: new TreeTableData(
           () => { 
-            return window.vue.$children[0].component 
+            return window.vue.$children[0].component
           },
           (data) => { 
             var keys = Object.keys(data.children)
@@ -65,7 +65,11 @@ export default {
       propsData: {
         test: new TreeTableData(
           () => {
-            return new Component(this.selectedComponent)
+            var c = new Component(this.selectedComponent).properties
+            var keys = Object.keys(c)
+            return keys.map((k) => {
+              return c[k]
+            })
           },
           (data) => {
             console.log("here", data.properties)

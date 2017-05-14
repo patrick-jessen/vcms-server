@@ -1,40 +1,106 @@
 <template>
-<div class='treetable'>
-  <div v-if='!_level' class='header'>
-    <div class='column' v-for='(h, i) in columnStyles' :style='h'>
-      <div v-if='i < columnStyles.length - 1' class='column-resize' @mousedown='onResizeStart($event, i)'></div>
-      {{columns[i].title}}
+<div>
+  <!-- Base component -->
+  <template v-if='typeof level === "undefined"'>
+    <div class='treetable'>
+      <div class='header'>
+        <div class='column' v-for='(h, i) in columnStyles' :style='h'>
+          <div v-if='i < columnStyles.length - 1' class='column-resize' @mousedown='onResizeStart($event, i)'></div>
+          {{columns[i].title}}
+        </div>
+      </div>
+      <div class='body'>
+        <TreeTable :test='test' :level='0' :columns='columns'/>
+      </div>
     </div>
-  </div>
-  <div class='body'>
-    <TreeTable :data='root' :level='0' :columns='columns' @select='onSelect'/>
-  </div>
+  </template>
+
+  <!-- Tree items -->
+  <template v-else>
+    <div class='item-wrapper'>
+      <div class='item' 
+        :class='{selected}'
+        @click='onClick'
+        @dblclick='onToggleExpansion'
+        @mouseenter='onHover(true)' 
+        @mouseleave='onHover(false)'>
+
+        <div class='column' v-for='(c, i) in columns' :style='columnStyles[i]'>
+          <i v-if='i === 0' class='expand' 
+            :class='expandIcon' 
+            @click.stop='onToggleExpansion' 
+            @mouseenter='onHoverExpansion(true)' 
+            @mouseleave='onHoverExpansion(false)'>
+          </i>
+          <div class='render' v-html='test.render(i)'></div>
+        </div>
+      </div>
+      <template v-if='expanded'>
+        <TreeTable v-for='c in test.children' :test='c' :level='level+1' :columns='columns'/>
+      </template>
+    </div>
+  </template>
 </div>
 </template>
 
 <script>
 export default {
   props: ['columns', 'test', 'level'],
+  data() {
+    return {
+      expanded: false,
+      selected: false,
+      expansionHovered: false,
+    }
+  },
+  beforeCreate() {
+    this.$options.components.TreeTable = require('./TreeTable.vue')
+  },
   computed: {
-    root() {
-      //return window.vue.$children[0].component
-      return this.test
+    expandIcon() {
+      if(this.test.children.length === 0)
+        return 'fa fa-square-o'
+
+      var str = ''
+      if(this.expanded)
+        str = 'fa fa-minus-square'
+      else
+        str = 'fa fa-plus-square'
+
+      if(!this.expansionHovered)
+        str += '-o'
+
+      return str
     },
     columnStyles() {
-      return this.columns.map((c) => {
-        return 'width: ' + c.width + '%'
-      })
-    },
-    _level() {
-      if(typeof this._level === 'undefined')
-        return 0
-      return this._level
+      var arr = []
+      for(var i = 0; i < this.columns.length; i++) {
+        var pad = ''
+        if(i === 0)
+          pad = '' + (this.level * 15 + 10) + 'px'
+
+        arr.push({
+          'padding-left': pad,
+          'width': '' + this.columns[i].width + '%'
+        })
+      }
+
+      return arr
     },
   },
   methods: {
-    
-    onSelect(arg) {
-      this.$emit('select', arg)
+    onToggleExpansion() {
+      this.expanded = !this.expanded
+    },
+    onClick(e) {
+      console.log('Click', this.test.data.namespace.string)
+    },
+    onHover(enter) {
+      if(enter)
+        console.log('Hover', this.test.data.namespace.string)
+    },
+    onHoverExpansion(enter) {
+      this.expansionHovered = enter
     },
     onResizeStart(e, index) {
       window.addEventListener('mousemove', this.onResize, false);
@@ -57,9 +123,6 @@ export default {
       window.removeEventListener('mousemove', this.onResize, false);
       window.removeEventListener('mouseup', this.onResizeStop, false);
     },
-  },
-  components: {
-    TreeTableItem: require('./TreeTableItem.vue')
   }
 }
 </script>
@@ -114,6 +177,52 @@ export default {
 
   &:hover .column-resize{
     display: block;
+  }
+}
+
+.item-wrapper {
+  padding: 0;
+
+  & .item {
+    border-bottom: 1px solid lightgray;
+    color: #444;
+    cursor: default;
+    height: 30px;
+    overflow: hidden;
+
+    &:hover {
+      background-color: #fafafa;
+    }
+    & .expand {
+      vertical-align: middle;
+      margin-right: 5px;
+      width: 12px;
+      height: 14px;
+      color: #42b883;
+      cursor: pointer;
+    }
+    &.selected {
+      background-color: #f5f5f5;
+    }
+    & .column {
+      display: inline-block;
+      padding: 5px;
+      height: 29px;
+      vertical-align: middle;
+
+      & .render {
+        display: inline-block;
+        height: 100%;
+
+        & * {
+          vertical-align: middle;
+          max-height: 100%;
+          width: auto;
+          max-width: 100%;
+          height: auto;
+        }
+      }
+    }
   }
 }
 </style>

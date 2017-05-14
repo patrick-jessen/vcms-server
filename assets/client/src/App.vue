@@ -25,7 +25,7 @@ export default {
   name: 'app',
   data () {
     return {
-      appUrl: '',
+      appUrl: 'localhost:8080',
       showBase: true,
       validApp: false,
     }
@@ -37,6 +37,8 @@ export default {
     this.$root.$on('select', (arg) => {
       
     })
+
+    this.loadScript()
   },
   methods: {
     recent() {
@@ -80,6 +82,7 @@ export default {
       script.src = url;
       script.onload = () => {
         this.validApp = true;
+        this.showBase = false;
       }
       document.head.appendChild(script);
     }
@@ -141,7 +144,7 @@ export default {
 }
 
 .slide-enter-active, .slide-leave-active {
-  transition: all 0.5s ease-in;
+  transition: all 0.0s ease-in;
   
 }
 .slide-enter, .slide-leave-to {
