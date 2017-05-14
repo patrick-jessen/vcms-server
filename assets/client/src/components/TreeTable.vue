@@ -120,6 +120,14 @@ export default {
       var f = 100 / absW
       w -= dif * f
 
+      // Adjust neighbor
+      if(this.columns.length >= this.resizeIndex + 1) {
+        this.columns[this.resizeIndex+1].width += dif * f
+      }
+      else {
+        this.columns[this.resizeIndex-1].width += dif * f
+      }
+
       this.columns[this.resizeIndex].width = w
       this.lastMouse = e.x
     },

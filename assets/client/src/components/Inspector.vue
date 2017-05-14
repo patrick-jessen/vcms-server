@@ -79,13 +79,36 @@ export default {
             return data.properties
           },
           (data, index) => {
-            return data.namespace.last
+            switch(index) {
+              case 0:
+                return data.namespace.last
+              case 1:
+                if(typeof data.value === 'object') 
+                {
+                  var fn = data.def.render
+                  var val = data.value
+
+                  if(data.def.type === 'array') {
+                    if(!Array.isArray(val))
+                      val = [val]
+                  }
+
+                  return new Function('val', fn)(val)
+                }
+                else {
+                  return data.value
+                }
+            }
           }
         ),
         columns: [
           {
             title: 'Property', 
-            width: 100
+            width: 50
+          },
+          {
+            title: 'Value', 
+            width: 50
           },
         ]
       }
@@ -98,7 +121,6 @@ export default {
   },
   methods: {
     onSelect(arg) {
-      console.log('select', arg)
       this.selectedComponent = arg
     },
     onResizeStart(e) {
