@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class='body'>
-        <TreeTable :test='test' :level='0' :columns='columns'/>
+        <TreeTable :test='test' :level='0' :columns='columns' :skipRoot='skipRoot'/>
       </div>
     </div>
   </template>
@@ -23,7 +23,8 @@
         @click='onClick'
         @dblclick='onToggleExpansion'
         @mouseenter='onHover(true)' 
-        @mouseleave='onHover(false)'>
+        @mouseleave='onHover(false)'
+        v-if='!skipRoot'>
 
         <div class='column' v-for='(c, i) in columns' :style='columnStyles[i]'>
           <i v-if='i === 0' class='expand' 
@@ -35,7 +36,10 @@
           <div class='render' v-html='test.render(i)'></div>
         </div>
       </div>
-      <template v-if='expanded'>
+      <template v-if='skipRoot'>
+        <TreeTable v-for='c in test.children' :test='c' :level='level' :columns='columns'/>
+      </template>
+      <template v-else-if='expanded'>
         <TreeTable v-for='c in test.children' :test='c' :level='level+1' :columns='columns'/>
       </template>
     </div>
@@ -45,7 +49,7 @@
 
 <script>
 export default {
-  props: ['columns', 'test', 'level'],
+  props: ['columns', 'test', 'level', 'skipRoot'],
   data() {
     return {
       expanded: false,
@@ -199,7 +203,10 @@ export default {
       width: 12px;
       height: 14px;
       color: #42b883;
-      cursor: pointer;
+
+      &:not(.fa-square-o) {
+        cursor: pointer;
+      }
     }
     &.selected {
       background-color: #f5f5f5;

@@ -5,8 +5,7 @@
     <div class='content'>
       <img class='logo' src='/assets/favicon.png'>
       <TreeTable v-bind='pageData' @select='onSelect'/>
-
-      <!--<TreeTable v-bind='propsData'/>-->
+      <TreeTable v-bind='propsData'/>
     </div>
   </div>
 </div>
@@ -63,20 +62,21 @@ export default {
       },
 
       propsData: {
+        skipRoot: true,
         test: new TreeTableData(
           () => {
-            var c = new Component(this.selectedComponent).properties
-            var keys = Object.keys(c)
-            return keys.map((k) => {
-              return c[k]
-            })
+            return new Component(this.selectedComponent)
           },
-          (data) => {
-            console.log("here", data.properties)
-            var keys = Object.keys(data.properties)
-            return keys.map((k) => {
-              return data.properties[k]
-            })
+          (data, root) => {
+            if(root) {
+              var keys = Object.keys(data.properties)
+
+              return keys.map((k) => {
+                return data.properties[k]
+              })
+
+            }
+            return data.properties
           },
           (data, index) => {
             return data.namespace.last
