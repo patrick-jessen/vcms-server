@@ -4,7 +4,8 @@
     <div class='resize' @mousedown='onResizeStart'></div>
     <div class='content'>
       <img class='logo' src='/assets/favicon.png'>
-      <TreeTable v-bind='pageData' @select='onSelect'/>
+      <TreeTable v-bind='pageData'/>
+      <TreeTable v-bind='compData'/>
       <TreeTable v-bind='propsData'/>
     </div>
   </div>
@@ -23,9 +24,8 @@ export default {
       },
       selectedComponent: 'app.$children.menu',
 
-      pageData: {
-
-        test: new TreeTableData(
+      compData: {
+        data: new TreeTableData(
           () => { 
             return window.vue.$children[0].component
           },
@@ -43,9 +43,11 @@ export default {
               case 1:
                 return `<img src='http://localhost:8081/assets/favicon.png'> ` + data.type
             }
+          },
+          (data) => {
+            return data.namespace.string
           }
         ),
-
         columns: [
           {
             title: 'Component', 
@@ -63,7 +65,7 @@ export default {
 
       propsData: {
         skipRoot: true,
-        test: new TreeTableData(
+        data: new TreeTableData(
           () => {
             return new Component(this.selectedComponent)
           },
@@ -99,6 +101,9 @@ export default {
                   return data.value
                 }
             }
+          },
+          (data) => {
+            return data.namespace.string
           }
         ),
         columns: [
@@ -110,6 +115,36 @@ export default {
             title: 'Value', 
             width: 50
           },
+        ]
+      },
+
+      pageData: {
+        skipRoot: true,
+        data: new TreeTableData(
+          () => {
+            return window.vue.$router.options.routes
+          },
+          (data, isRoot) => {
+            if(isRoot)
+              return window.vue.$router.options.routes
+            
+            if(data.children)
+              return data.children
+            return []
+          },
+          (data, index) => {
+            console.log(data)
+            return data.path
+          },
+          (data) => {
+            return data.path
+          }
+        ),
+        columns: [
+          {
+            title: 'Page',
+            width: 100
+          }
         ]
       }
     

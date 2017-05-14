@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class='body'>
-        <TreeTable :test='test' :level='0' :columns='columns' :skipRoot='skipRoot'/>
+        <TreeTable :data='data' :level='0' :columns='columns' :skipRoot='skipRoot'/>
       </div>
     </div>
   </template>
@@ -33,14 +33,14 @@
             @mouseenter='onHoverExpansion(true)' 
             @mouseleave='onHoverExpansion(false)'>
           </i>
-          <div class='render' v-html='test.render(i)'></div>
+          <div class='render' v-html='data.render(i)'></div>
         </div>
       </div>
       <template v-if='skipRoot'>
-        <TreeTable v-for='c in test.children' :test='c' :level='level' :columns='columns'/>
+        <TreeTable v-for='c in data.children' :data='c' :level='level' :columns='columns'/>
       </template>
       <template v-else-if='expanded'>
-        <TreeTable v-for='c in test.children' :test='c' :level='level+1' :columns='columns'/>
+        <TreeTable v-for='c in data.children' :data='c' :level='level+1' :columns='columns'/>
       </template>
     </div>
   </template>
@@ -49,7 +49,7 @@
 
 <script>
 export default {
-  props: ['columns', 'test', 'level', 'skipRoot'],
+  props: ['columns', 'data', 'level', 'skipRoot'],
   data() {
     return {
       expanded: false,
@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     expandIcon() {
-      if(this.test.children.length === 0)
+      if(this.data.children.length === 0)
         return 'fa fa-square-o'
 
       var str = ''
@@ -97,11 +97,11 @@ export default {
       this.expanded = !this.expanded
     },
     onClick(e) {
-      console.log('Click', this.test.data.namespace.string)
+      console.log('Click', this.data.identifier)
     },
     onHover(enter) {
       if(enter)
-        console.log('Hover', this.test.data.namespace.string)
+        console.log('Hover', this.data.identifier)
     },
     onHoverExpansion(enter) {
       this.expansionHovered = enter
