@@ -6,7 +6,10 @@ import (
 	"runtime"
 )
 
-var browserArgs = []string{"--app=http://localhost:1337/"}
+var browserArgs = []string{
+	//"--app=http://localhost:1337/",
+	"http://localhost:1337/",
+}
 
 // Browser starts the browser.
 // It panics if browser cannot be started

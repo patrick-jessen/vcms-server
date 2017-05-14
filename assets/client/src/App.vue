@@ -27,8 +27,16 @@ export default {
     return {
       appUrl: '',
       showBase: true,
-      validApp: false
+      validApp: false,
     }
+  },
+  created() {
+    this.$root.$on('hover', (arg) => {
+      window.vue.$set(window.vue, 'hoveredNamespace', arg)
+    })
+    this.$root.$on('select', (arg) => {
+      
+    })
   },
   methods: {
     recent() {
