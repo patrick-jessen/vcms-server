@@ -17,6 +17,7 @@
       </div>
     </transition>
     <Inspector v-if='!showBase'/>
+    <iframe id='app' :src='iframeUrl'></iframe>
   </div>
 </template>
 
@@ -28,6 +29,7 @@ export default {
       appUrl: 'localhost:8080',
       showBase: true,
       validApp: false,
+      iframeUrl: ''
     }
   },
   created() {
@@ -37,8 +39,6 @@ export default {
     this.$root.$on('select', (arg) => {
       
     })
-
-    this.loadScript()
   },
   methods: {
     recent() {
@@ -63,28 +63,57 @@ export default {
     },
     onInput(e) {
       this.appUrl = e.target.value
-      this.loadScript()     
+      this.connect()     
     },
     onRecent(url) {
       this.appUrl = url
-      this.loadScript()
+      this.connect()
     },
 
-    loadScript() {
-      var prevScript = document.getElementById('appscript')
-      if(prevScript) {
-        document.head.removeChild(prevScript)
+    connect() {
+      var protocol, host, port
+      var urlFrags = this.appUrl.split(':')
+      switch(urlFrags.length) {
+        case 1:
+          protocol = 'http'
+          host = urlFrags[0]
+          port = '80'
+          break
+        case 2:
+          // Check if port
+          port = '' + parseInt(urlFrags[1])
+          if(port.length > 0) {
+            protocol = 'http'
+            host = urlFrags[0]
+          }
+          else {
+            protocol = urlFrags[0]
+            host = urlFrags[1].replace('//', '')
+            port = '80'
+          }
+          break
+        case 3:
+          protocol = urlFrags[0]
+          host = urlFrags[1].replace('//', '')
+          port = urlFrags[2]
       }
+      
+      var client = new XMLHttpRequest();
+      client.open("GET", "/api/connect/" + protocol + '/' + host + '/' + port, true);
+      client.onload = () => {
+        if (client.readyState === 4) {
+          if (client.status === 200) {
+            this.validApp = true
+            setTimeout(() => {
+            this.iframeUrl = 'http://127.0.0.1:1337'
 
-      var url = 'http://' + this.appUrl + '/dist/build.js';
-      var script = document.createElement('script');
-      script.id = 'appscript';
-      script.src = url;
-      script.onload = () => {
-        this.validApp = true;
-        this.showBase = false;
+            }, 100)
+            return
+          }
+        }
+        this.validApp = false
       }
-      document.head.appendChild(script);
+      client.send();
     }
   },
   components: {
@@ -141,6 +170,11 @@ export default {
       }
     }
   }
+}
+
+#app {
+  height: 100vh;
+  border: none;
 }
 
 .slide-enter-active, .slide-leave-active {

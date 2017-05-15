@@ -27,13 +27,15 @@
         v-if='!skipRoot'>
 
         <div class='column' v-for='(c, i) in columns' :style='columnStyles[i]'>
-          <i v-if='i === 0' class='expand' 
-            :class='expandIcon' 
-            @click.stop='onToggleExpansion' 
-            @mouseenter='onHoverExpansion(true)' 
-            @mouseleave='onHoverExpansion(false)'>
-          </i>
-          <div class='render' v-html='data.render(i)'></div>
+          <div class='column-content'>
+            <i v-if='i === 0' class='expand' 
+              :class='expandIcon' 
+              @click.stop='onToggleExpansion' 
+              @mouseenter='onHoverExpansion(true)' 
+              @mouseleave='onHoverExpansion(false)'>
+            </i>
+            <div class='render' v-html='data.render(i)'></div>
+          </div>
         </div>
       </div>
       <template v-if='skipRoot'>
@@ -147,7 +149,7 @@ export default {
   overflow: auto;
   margin: 10px 0;
 
-  height: 300px;
+  height: 225px;
 
   &::-webkit-scrollbar {
     width: 0px;
@@ -224,6 +226,12 @@ export default {
       padding: 5px;
       height: 29px;
       vertical-align: middle;
+      overflow: hidden;
+
+      & .column-content {
+        width: 1000px;
+        height: 100%;
+      }
 
       & .render {
         display: inline-block;

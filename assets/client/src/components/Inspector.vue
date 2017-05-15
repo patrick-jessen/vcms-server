@@ -4,8 +4,18 @@
     <div class='resize' @mousedown='onResizeStart'></div>
     <div class='content'>
       <img class='logo' src='/assets/favicon.png'>
-      <TreeTable v-bind='pageData'/>
-      <TreeTable v-bind='compData'/>
+
+      <div class='tabs'>
+        <div class='tab' :class='{active:activeTab==0}' @click='activeTab=0'>
+          <i class='fa fa-cubes'></i>
+        </div>
+        <div class='tab' :class='{active:activeTab==1}' @click='activeTab=1'>
+          <i class='fa fa-columns'></i>
+        </div>
+      </div>
+
+      <TreeTable v-show='activeTab==0' v-bind='compData'/>
+      <TreeTable v-show='activeTab==1' v-bind='pageData'/>
       <TreeTable v-bind='propsData'/>
     </div>
   </div>
@@ -18,9 +28,10 @@ import {TreeTableData} from '../structs.js'
 export default {
   data() {
     return {
+      activeTab: 0,
       shown: true,
       style: {
-        width: '300px'
+        width: '500px'
       },
       selectedComponent: 'app.$children.menu',
 
@@ -98,7 +109,7 @@ export default {
                   return new Function('val', fn)(val)
                 }
                 else {
-                  return data.value
+                  return data.def.type
                 }
             }
           },
@@ -133,7 +144,6 @@ export default {
             return []
           },
           (data, index) => {
-            console.log(data)
             return data.path
           },
           (data) => {
@@ -229,6 +239,27 @@ export default {
     & .logo {
       width: 30px;
       margin: 0;
+    }
+
+    & .tabs {
+      height: 40px;
+      width: 100%;
+
+      & .tab {
+        display: inline-block;
+        padding: 10px 30px;
+        color: #aaa;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #444;
+          color: #fefefe;
+        }
+
+        &.active {
+          color: #fefefe;
+        }
+      }
     }
   }
 }

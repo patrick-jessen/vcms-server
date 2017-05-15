@@ -7,8 +7,8 @@ import (
 )
 
 var browserArgs = []string{
-	//"--app=http://localhost:1337/",
-	"http://localhost:1337/",
+	//"http://127.0.0.1:1337/api/connect/http/localhost/8080",
+	"http://127.0.0.1:1337?vcms=true",
 }
 
 // Browser starts the browser.
