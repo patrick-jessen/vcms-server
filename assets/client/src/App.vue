@@ -26,7 +26,7 @@ export default {
   name: 'app',
   data () {
     return {
-      appUrl: 'localhost:8080',
+      appUrl: '127.0.0.1:8080',
       showBase: true,
       validApp: false,
       iframeUrl: ''
@@ -104,10 +104,7 @@ export default {
         if (client.readyState === 4) {
           if (client.status === 200) {
             this.validApp = true
-            setTimeout(() => {
             this.iframeUrl = 'http://127.0.0.1:1337'
-
-            }, 100)
             return
           }
         }
