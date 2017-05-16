@@ -169,6 +169,8 @@ export default {
       this.selectedComponent = arg
     },
     onResizeStart(e) {
+      window.frames[0].window.addEventListener('mousemove', this.onResize, false);
+      window.frames[0].window.addEventListener('mouseup', this.onResizeStop, false);
       window.addEventListener('mousemove', this.onResize, false);
       window.addEventListener('mouseup', this.onResizeStop, false);
       this.lastMouse = e.x
@@ -185,8 +187,12 @@ export default {
       }
       this.style.width = '' + w + 'px'
       this.lastMouse = e.x
+
+      e.stopPropagation()
     },
     onResizeStop(e) {
+      window.frames[0].window.removeEventListener('mousemove', this.onResize, false);
+      window.frames[0].window.removeEventListener('mouseup', this.onResizeStop, false);
       window.removeEventListener('mousemove', this.onResize, false);
       window.removeEventListener('mouseup', this.onResizeStop, false);
       
@@ -214,7 +220,6 @@ export default {
 
 <style lang='scss'>
 #inspector {
-  pointer-events: all;
   position: fixed;
   right: 0;
   height: 100vh;
@@ -229,7 +234,6 @@ export default {
     position: absolute;
   }
   & .content {
-    width: 100%;
     vertical-align: top;
     padding: 20px;
     text-align: center;

@@ -16,8 +16,8 @@
         </ul>
       </div>
     </transition>
-    <Inspector v-if='!showBase'/>
-    <iframe id='app' :src='iframeUrl'></iframe>
+    <Inspector v-if='validApp'/>
+    <iframe v-show='!showBase' id='app' :src='iframeUrl'></iframe>
   </div>
 </template>
 
@@ -39,6 +39,10 @@ export default {
     this.$root.$on('select', (arg) => {
       
     })
+  },
+  mounted() {
+
+    this.connect()
   },
   methods: {
     recent() {
@@ -103,8 +107,15 @@ export default {
       client.onload = () => {
         if (client.readyState === 4) {
           if (client.status === 200) {
-            this.validApp = true
+            
             this.iframeUrl = 'http://127.0.0.1:1337'
+            document.getElementById('app').onload = () => {
+              window.vue = window.frames[0].window.vue
+              this.validApp = true
+
+              window.Component = window.frames[0].window.Component
+            }
+
             return
           }
         }
@@ -120,16 +131,15 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+}
+
 #vcms {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
+  height: 100vh;
+  overflow: hidden;
 
   & .base{
-    pointer-events: all;
     width: 100%;
     height: 100%;
     background: #141E30;  /* fallback for old browsers */
