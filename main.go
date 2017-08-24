@@ -6,6 +6,6 @@ import (
 
 func main() {
 	start.Signal()
-	start.Browser()
+	//start.Browser()
 	start.Server()
 }

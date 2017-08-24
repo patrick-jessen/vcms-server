@@ -34,7 +34,8 @@
               @mouseenter='onHoverExpansion(true)' 
               @mouseleave='onHoverExpansion(false)'>
             </i>
-            <div class='render' v-html='data.render(i)'></div>
+            <div v-if='renderIsString(i)' class='render' v-html='render(i)'></div>
+            <component v-else class='render' v-bind='render(i)' :is='render(i).is'></component>
           </div>
         </div>
       </div>
@@ -95,6 +96,12 @@ export default {
     },
   },
   methods: {
+    render(column) {
+      return this.data.render(column)
+    },
+    renderIsString(column) {
+      return typeof this.render(column) === 'string'
+    },
     onToggleExpansion() {
       this.expanded = !this.expanded
     },
@@ -175,6 +182,7 @@ export default {
     text-align: center;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 
     & .column-resize {
       display: none;
@@ -210,9 +218,10 @@ export default {
     & .expand {
       vertical-align: middle;
       margin-right: 5px;
-      width: 12px;
-      height: 14px;
+      margin-top: -3px;
       color: #42b883;
+      width: 14px;
+      height: 14px;
 
       &:not(.fa-square-o) {
         cursor: pointer;
@@ -227,6 +236,7 @@ export default {
       height: 29px;
       vertical-align: middle;
       overflow: hidden;
+      box-sizing: border-box;
 
       & .column-content {
         width: 1000px;

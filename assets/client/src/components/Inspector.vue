@@ -52,7 +52,7 @@ export default {
                 if(data.parentDef.title) return data.parentDef.title
                   return data.parentDef.name
               case 1:
-                return `<img src='http://localhost:8081/assets/favicon.png'> ` + data.type
+                return `<img src='/assets/favicon.png'> ` + data.type
             }
           },
           (data) => {
@@ -109,7 +109,11 @@ export default {
                   return new Function('val', fn)(val)
                 }
                 else {
-                  return data.def.type
+                  // return data.def.type
+                  return {
+                    is: 'input',
+                    value: data.def.type
+                  }
                 }
             }
           },
